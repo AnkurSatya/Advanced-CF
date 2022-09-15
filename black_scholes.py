@@ -1,0 +1,28 @@
+from scipy.stats import norm
+import numpy as np
+from numpy import log, pi, sqrt, exp
+
+def callBlackScholes(S,T, r, K, vol):
+    
+    def d1(S,T,K,r,vol):
+        return (log(S/K)+(r+0.5*vol**2)*T)/vol*sqrt(T)
+
+    d1 = d1(S,T,K,r,vol)
+
+    def d2(T,vol):
+        
+        return d1 - vol*sqrt(T)
+    
+    d2 = d2(T,vol)
+
+    call = S*norm.cdf(d1) - exp(-r*T)*K*norm.cdf(d2)
+    return [call, norm.cdf(d1)]
+
+
+sigma=0.2
+r = 0.06
+S0 = 100
+K=99
+T=10/365
+
+print(callBlackScholes(S0,T, r, K, sigma))
