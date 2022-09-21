@@ -32,19 +32,24 @@ def LSM_montecarlo(T,N,steps,S0,r,sigma,K, typeCP):
     
     # LSM algorithm
     V = np.copy(payoff_T)
-    steps2= 1
+
     for t in range(steps-1, 0, -1):
-        #print(t)
         #Least squares polynomial fit.
-        reg = np.polyfit(stock_paths[t], V[t+steps2]*df, 7)
+        #reg = np.polyfit(stock_paths[t], V[t+1]*df, 7)
+        reg = np.polynomial.legendre.legfit(stock_paths[t], V[t+1]*df, 7)
 
         #Evaluate polynomial at specific values
-        expected_value_option = np.polyval(reg, stock_paths[t])
+        #expected_value_option = np.polyval(reg, stock_paths[t])
+        expected_value_option = np.polynomial.legendre.legval(stock_paths[t],reg)
 
         
         #payoffs and if option was exercised earlier because the regressed
         #price was better than payoff also the discounted price of the option
-        V[t] = np.where(expected_value_option > payoff_T[t], V[t+1]*df, payoff_T[t])
+        if (t % frequency_use_bermudan) == 0:
+            print(t)
+            V[t] = np.where(expected_value_option > payoff_T[t], V[t+1]*df, payoff_T[t])
+        else:
+            V[t] = V[t+1]*df
             
     # V[1] is value of the option of those paths
     #sum over all the final option prices divided by the number op paths
@@ -60,5 +65,6 @@ r=0.06
 sigma=0.2
 K=99
 typeCP='put'
+frequency_use_bermudan = 120
 
-print('LSMC value for American option',LSM_montecarlo(T,N,steps,S,r,sigma,K, typeCP))
+print('Bermudan option where you can exercise every', frequency_use_bermudan,'days, price:', LSM_montecarlo(T,N,steps,S,r,sigma,K, typeCP))
