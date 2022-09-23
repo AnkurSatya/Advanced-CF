@@ -58,13 +58,13 @@ def LSM_montecarlo(T,N,steps,S0,r,sigma,K, typeCP):
     return option
 
 T=1
-N=500000
+N=100000
 steps=365
 S=100
 r=0.06
 sigma=0.2
 K=99
 typeCP='put'
-frequency_use_bermudan = 120
+frequency_use_bermudan = 30
 
 print('Bermudan option where you can exercise every', frequency_use_bermudan,'days, price:', LSM_montecarlo(T,N,steps,S,r,sigma,K, typeCP))

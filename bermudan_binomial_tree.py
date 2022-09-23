@@ -37,7 +37,15 @@ def get_option_value_binomial_matrix(tree, T, r, K, vol, N, exercise_time, optio
     # ToDo:May be replace with the following algorithm: 
     # a = (exercise_time[1] - exercise_time[0])*N
     # exercise_points = [N*exercise_time[0], N*exercise_time[0] + a, N*exercise_time[0] + 2*a, ...]
-    exercise_points = [int(N*val) for val in exercise_time] 
+    # exercise_points = [int(N*val) for val in exercise_time]
+
+    # exercise_points = np.arange(N/len(exercise_time), N, N/len(exercise_time))
+    # exercise_points[-1] = N
+
+    a = 1.0*N/365
+    exercise_points = [int(pt) for pt in np.arange(30*a, N, 30*a)]
+
+    print(exercise_points)
     
     # Adding payoff value for the last step of the tree
     for c in range(cols):
